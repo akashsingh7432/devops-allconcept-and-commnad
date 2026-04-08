@@ -1,0 +1,96 @@
+Last login: Wed Apr  8 13:07:28 on ttys000
+aakashkumar@Aakashkumars-MacBook-Air ~ % clear
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+aakashkumar@Aakashkumars-MacBook-Air ~ % cd ~/my-node-app
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % cat <<EOF > app.js
+const express = require("express");
+const app = express();
+app.get("/", (req, res) => {
+  res.send("Docker Node App Running!");
+});
+app.listen(3000, "0.0.0.0", () => {
+  console.log("Server running on port 3000");
+});
+EOF
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % cat <<EOF > package.json
+{
+  "name": "node-docker-app",
+  "version": "1.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
+EOF
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % cat <<EOF > Dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package.json .
+RUN npm install
+COPY app.js .
+EXPOSE 3000
+CMD ["node", "app.js"]
+EOF
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % ls
+app.js		Dockerfile	package.json
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % docker build -t node-app .
+[+] Building 19.1s (11/11) FINISHED                                                                docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                               0.0s
+ => => transferring dockerfile: 155B                                                                               0.0s
+ => [internal] load metadata for docker.io/library/node:18-alpine                                                 14.8s
+ => [auth] library/node:pull token for registry-1.docker.io                                                        0.0s
+ => [internal] load .dockerignore                                                                                  0.0s
+ => => transferring context: 2B                                                                                    0.0s
+ => CACHED [1/5] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb  0.0s
+ => => resolve docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8c  0.0s
+ => [internal] load build context                                                                                  0.0s
+ => => transferring context: 418B                                                                                  0.0s
+ => [2/5] WORKDIR /app                                                                                             0.0s
+ => [3/5] COPY package.json .                                                                                      0.0s
+ => [4/5] RUN npm install                                                                                          3.9s
+ => [5/5] COPY app.js .                                                                                            0.0s
+ => exporting to image                                                                                             0.3s
+ => => exporting layers                                                                                            0.2s
+ => => exporting manifest sha256:875f1ced34fed992df5fe644cc4884a9609b190cb0574656fdfa3bb3e432482d                  0.0s
+ => => exporting config sha256:ce771c94a1f9927096be864926ca566d07f38412866bd3e6fcb20ab2c036063c                    0.0s
+ => => exporting attestation manifest sha256:09e683865b4a5a661728bd9064c7a1eece63f59fd898114131b79c5719ac5f17      0.0s
+ => => exporting manifest list sha256:1b5cf1d8010962a04babcda01d00c2d97511df678021142003acae60f5e4b234             0.0s
+ => => naming to docker.io/library/node-app:latest                                                                 0.0s
+ => => unpacking to docker.io/library/node-app:latest                                                              0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/yaskg4ffvb35lf74fq7ko7p70
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % docker run -d -p 3000:3000 --name node-server node-app
+c86dbd96cf132b04b90106ed71a4aa70a0a4266e9276eb3b24fb3c95b48a424f
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % docker ps
+CONTAINER ID   IMAGE      COMMAND                  CREATED              STATUS              PORTS                                         NAMES
+c86dbd96cf13   node-app   "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp   node-server
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % docker logs node-server
+Server running on port 3000
+aakashkumar@Aakashkumars-MacBook-Air my-node-app % 
