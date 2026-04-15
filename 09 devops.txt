@@ -1,0 +1,104 @@
+Last login: Wed Apr  8 13:12:52 on ttys000
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker network ls
+NETWORK ID     NAME            DRIVER    SCOPE
+c5cd3189835d   bridge          bridge    local
+a1ce49a20a09   host            host      local
+5c6d68ca00ac   mongo-network   bridge    local
+57553c5c7e50   none            null      local
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker network  inspect bridge
+[
+    {
+        "Name": "bridge",
+        "Id": "c5cd3189835d3d6c9de8725e0a038d0d4a4285b84b3cb26679477c1d0e709648",
+        "Created": "2026-04-09T07:30:51.213117708Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "65535"
+        },
+        "Labels": {},
+        "Containers": {},
+        "Status": {
+            "IPAM": {
+                "Subnets": {
+                    "172.17.0.0/16": {
+                        "IPsInUse": 3,
+                        "DynamicIPsAvailable": 65533
+                    }
+                }
+            }
+        }
+    }
+]
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker network create my_bridge_ne
+e00714f84a241c338e94758db223ca6750d6329a3f7f253647c4308c8aea0749
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker run -d --name container1 --network my_bridge_ne nginx
+ff89098d6ed5ac733f77587447bd189a3ed88335bebb4c76d5e1d7b85b6de1a3
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker run -d --name container --network my_bridge_ne nginx 
+1f0ac79e0a2c5fff46376398ba53178fb6412b9e0618a7d5cd47f2de3b67e9d9
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+1f0ac79e0a2c   nginx     "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes   80/tcp    container
+ff89098d6ed5   nginx     "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes   80/tcp    container1
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker ping
+docker: unknown command: docker ping
+
+Run 'docker --help' for more information
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker exec -it container1 ping container2
+OCI runtime exec failed: exec failed: unable to start container process: exec: "ping": executable file not found in $PATH
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker exec -it container2 ping container1
+Error response from daemon: No such container: container2
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker run -d --name container --network my_bridge_ne alpine sleep 300
+Unable to find image 'alpine:latest' locally
+latest: Pulling from library/alpine
+d8ad8cd72600: Pull complete 
+cb94f19e6ea6: Download complete 
+37093440b0e0: Download complete 
+Digest: sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
+Status: Downloaded newer image for alpine:latest
+docker: Error response from daemon: Conflict. The container name "/container" is already in use by container "1f0ac79e0a2c5fff46376398ba53178fb6412b9e0618a7d5cd47f2de3b67e9d9". You have to remove (or rename) that container to be able to reuse that name.
+
+Run 'docker run --help' for more information
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker exec -it container2 ping container1                            
+Error response from daemon: No such container: container2
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker exec -it container1 ping container 2
+OCI runtime exec failed: exec failed: unable to start container process: exec: "ping": executable file not found in $PATH
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker exec -it container2 ping container1 
+Error response from daemon: No such container: container2
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker exec -it container2 ping container 
+Error response from daemon: No such container: container2
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker ps                                
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+1f0ac79e0a2c   nginx     "/docker-entrypoint.…"   8 minutes ago   Up 8 minutes   80/tcp    container
+ff89098d6ed5   nginx     "/docker-entrypoint.…"   8 minutes ago   Up 8 minutes   80/tcp    container1
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker exec -it container1 ping container
+OCI runtime exec failed: exec failed: unable to start container process: exec: "ping": executable file not found in $PATH
+aakashkumar@Aakashkumars-MacBook-Air ~ % docker exec -it container ping container1
+OCI runtime exec failed: exec failed: unable to start container process: exec: "ping": executable file not found in $PATH
+aakashkumar@Aakashkumars-MacBook-Air ~ % aws ya cloud kispe data store kerna hoga or servier live kerna hoga mobile or desktop pe tho total kitna carge aygha or sab data khaha pe store hoga
+zsh: command not found: aws
+aakashkumar@Aakashkumars-MacBook-Air ~ % 
